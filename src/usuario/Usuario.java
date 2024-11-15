@@ -4,6 +4,8 @@
  */
 package usuario;
 
+import metodosDePago.Cartera;
+
 /**
  *
  * @author David
@@ -12,8 +14,12 @@ public class Usuario {
     private String id;               
     private String nombre;          
     private String correoElectronico; 
-    private Cartera cartera;            
+    private Cartera cartera;
     private boolean cuentaActiva;   
+
+    public Usuario(){
+
+    }
 
     public Usuario(String id, String nombre, String correoElectronico, Cartera cartera) {
         this.id = id;
@@ -23,6 +29,25 @@ public class Usuario {
         this.cuentaActiva = true;
     }
 
+    public void setCartera(Cartera cartera) {
+        this.cartera = cartera;
+    }
+
+    public void setCuentaActiva(boolean cuentaActiva) {
+        this.cuentaActiva = cuentaActiva;
+    }
+
+    public void setCorreoElectronico(String correoElectronico) {
+        this.correoElectronico = correoElectronico;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getId() {
         return id;
@@ -43,6 +68,7 @@ public class Usuario {
     public boolean isCuentaActiva() {
         return cuentaActiva;
     }
+
     // *************************************************************** 
     // Método pendiente para actualizar saldo a Cartera
     // ***************************************************************
@@ -52,13 +78,14 @@ public class Usuario {
         System.out.println("La cuenta ha sido desactivada.");
     }
 
-    // Método para reactivar la cuenta
     public void reactivarCuenta() {
         this.cuentaActiva = true;
         System.out.println("La cuenta ha sido reactivada.");
     }
 
-    // Método para mostrar información del usuario
+    public void pagar(double cantidad){
+        cartera.realizarPago(cantidad);
+    }
     public void mostrarInformacion() {
         System.out.println("ID: " + id);
         System.out.println("Nombre: " + nombre);

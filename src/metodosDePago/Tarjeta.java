@@ -1,16 +1,18 @@
-package usuario;
-
+package metodosDePago;
+import tiposDeCambio.Pago;
 public class Tarjeta {
     private String numero;
     private String titular;
     private String fechaVencimiento;
     private String tipo; // Ejemplo: "Débito" o "Crédito"
+    private Pago tipoDeCambio;
 
-    public Tarjeta(String numero, String titular, String fechaVencimiento, String tipo) {
+    public Tarjeta(String numero, String titular, String fechaVencimiento, String tipo, Pago tipoDeCambio) {
         this.numero = numero;
         this.titular = titular;
         this.fechaVencimiento = fechaVencimiento;
         this.tipo = tipo;
+        this.tipoDeCambio = tipoDeCambio;
     }
 
     public String getNumero() {

@@ -3,8 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/David/Documents/NetBeansProjects/Casino/src/usuario/Admin.java</file>
-            <file>file:/C:/Users/David/Documents/NetBeansProjects/Casino/src/usuario/Gambler.java</file>
+            <file>file:/C:/Users/David/Documents/NetBeansProjects/Casino/src/principal/Principal.java</file>
+            <file>file:/C:/Users/David/Documents/NetBeansProjects/Casino/src/tiposDeCambio/Pago.java</file>
+            <file>file:/C:/Users/David/Documents/NetBeansProjects/Casino/src/tiposDeCambio/PagoEnDolares.java</file>
+            <file>file:/C:/Users/David/Documents/NetBeansProjects/Casino/src/usuario/Cartera.java</file>
+            <file>file:/C:/Users/David/Documents/NetBeansProjects/Casino/src/usuario/Usuario.java</file>
+            <file>file:/C:/Users/David/Documents/NetBeansProjects/Casino/src/tiposDeCambio/PagoEnPesos.java</file>
         </group>
     </open-files>
 </project-private>

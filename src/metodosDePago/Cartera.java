@@ -1,17 +1,27 @@
-package usuario;
+package metodosDePago;
+
+import tiposDeCambio.Pago;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Cartera {
     private double saldo;  
-    private List<Tarjeta> tarjetas;  
-    private List<CuentaBancaria> cuentasBancarias;  
+    private List<Tarjeta> tarjetas;
+    private List<CuentaBancaria> cuentasBancarias;
+    private Pago tipoDeCambio;
 
-    public Cartera(double saldoInicial) {
+    public Cartera(double saldoInicial, Pago tipoDeCambio) {
         this.saldo = saldoInicial;
         this.tarjetas = new ArrayList<>();
         this.cuentasBancarias = new ArrayList<>();
+        this.tipoDeCambio = tipoDeCambio;
+    }
+
+    public void realizarPago(double cantidad){
+        // Elegir método de pago por medio de la interfaz
+        tipoDeCambio.pagar(cantidad);
+        saldo -= cantidad;
     }
 
     public double getSaldo() {

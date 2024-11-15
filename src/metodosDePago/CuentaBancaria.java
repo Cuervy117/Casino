@@ -1,9 +1,12 @@
-package usuario;
+package metodosDePago;
+
+import tiposDeCambio.Pago;
 
 public class CuentaBancaria {
     private String numeroCuenta;
     private String nombreBanco;
     private String titularCuenta;
+    private Pago tipoDeCambio;
 
     public CuentaBancaria(String numeroCuenta, String nombreBanco, String titularCuenta) {
         this.numeroCuenta = numeroCuenta;
