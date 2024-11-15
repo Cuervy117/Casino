@@ -16,17 +16,23 @@ public class Usuario {
     private String correoElectronico; 
     private Cartera cartera;
     private boolean cuentaActiva;   
+    private int contraseña;
 
     public Usuario(){
 
     }
 
-    public Usuario(String id, String nombre, String correoElectronico, Cartera cartera) {
+    public Usuario(String id, String nombre, String correoElectronico, Cartera cartera, String contraseña) {
         this.id = id;
         this.nombre = nombre;
         this.correoElectronico = correoElectronico;
         this.cartera = cartera;
         this.cuentaActiva = true;
+        this.contraseña = contraseña.hashCode();
+    }
+
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña.hashCode();
     }
 
     public void setCartera(Cartera cartera) {
@@ -65,6 +71,10 @@ public class Usuario {
         return cartera;
     }
 
+    public int getContraseña(){
+        return contraseña;
+    }
+
     public boolean isCuentaActiva() {
         return cuentaActiva;
     }
@@ -91,6 +101,18 @@ public class Usuario {
         System.out.println("Nombre: " + nombre);
         System.out.println("Correo Electrónico: " + correoElectronico);
         System.out.println("Cuenta Activa: " + (cuentaActiva ? "Sí" : "No"));
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", correoElectronico='" + correoElectronico + '\'' +
+                ", cartera=" + cartera +
+                ", cuentaActiva=" + cuentaActiva +
+                ", contraseña=" + contraseña +
+                '}';
     }
 }
 
