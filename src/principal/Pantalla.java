@@ -27,6 +27,8 @@ public class Pantalla extends JFrame {
         entrar.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Bienvenido al sistema");
             dispose();
+            Casino casino = new Casino();
+            casino.setVisible(true);
         });
     }
 
