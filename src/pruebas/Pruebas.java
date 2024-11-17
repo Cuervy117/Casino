@@ -30,13 +30,13 @@ public class Pruebas {
             papu.getCartera().agregarSaldoCasino(500);
             System.out.println("Saldo después de apostar y ganar: $" + papu.getCartera().getSaldo());
 
-            gestorUsuarios.guardarEstadoUsuario("jugador1");
+            gestorUsuarios.guardarEstadoUsuario(papu.getNombre());
             System.out.println("Estado guardado.");
 
             papu.getCartera().realizarPago(300);
             System.out.println("Saldo después de otra apuesta: $" + papu.getCartera().getSaldo());
 
-            gestorUsuarios.restaurarEstadoUsuario("jugador1");
+            gestorUsuarios.restaurarEstadoUsuario(papu.getNombre());
             System.out.println("Estado restaurado. Saldo: $" + papu.getCartera().getSaldo());
 
             System.out.println("Apuesta excesiva uwu");
