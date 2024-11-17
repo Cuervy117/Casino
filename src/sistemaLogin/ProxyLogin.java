@@ -11,7 +11,7 @@ public class ProxyLogin implements Login {
 
     @Override
     public boolean autenticar(String usuario, String contraseña) throws IOException {
-        System.out.println("Inciando autenticación");
+        System.out.println("Iniciando autenticación");
 
         boolean autenticado = login.autenticar(usuario, contraseña);
 
