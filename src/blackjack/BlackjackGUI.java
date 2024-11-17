@@ -202,7 +202,8 @@ public class BlackjackGUI extends JFrame {
             inicializarJuego();
             realizarApuestaInicial();
         } else {
-            System.exit(0);
+            //System.exit(0);
+            dispose();
         }
     }
 
