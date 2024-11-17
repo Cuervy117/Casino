@@ -1,6 +1,10 @@
 package principal;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import blackjack.BlackJack;
+import blackjack.BlackjackGUI;
 
 public class Casino extends JFrame {
     private JButton blackJackButton;
@@ -18,6 +22,10 @@ public class Casino extends JFrame {
 
     public Casino() {
         inicializar();
+        blackJackButton.addActionListener(e -> {
+            BlackjackGUI bj = new BlackjackGUI();
+            bj.setVisible(true);
+        });
     }
 
     public void inicializar() {

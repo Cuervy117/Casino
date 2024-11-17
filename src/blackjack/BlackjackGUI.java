@@ -34,6 +34,7 @@ public class BlackjackGUI extends JFrame {
     private void inicializarInterfaz() {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         JPanel panelCartas = new JPanel();
@@ -201,7 +202,8 @@ public class BlackjackGUI extends JFrame {
             inicializarJuego();
             realizarApuestaInicial();
         } else {
-            System.exit(0);
+            //System.exit(0);
+            dispose();
         }
     }
 
