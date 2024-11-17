@@ -8,14 +8,14 @@ package usuario;
  *
  * @author David
  */
-import metodosDePago.Cartera;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import metodosDePago.Cartera;
+//Caretaker en memento. Encargado de guardar los estados de usuarios
 public class Admin extends Usuario {
     private List<Usuario> usuarios; // Lista de usuarios registrados en el casino
 
+    // Aquí sugiero que el admin tenga un atributo de la siguiente forma: private GestorUsuarios <identificador>;
     public Admin(String id, String nombre, String correoElectronico, Cartera cartera, String contraseña) {
         super(id, nombre, correoElectronico, cartera, contraseña); // Iniciamos con saldo 0 y como administrador
         this.usuarios = new ArrayList<>();
@@ -43,6 +43,8 @@ public class Admin extends Usuario {
         System.out.println("Usuario con ID " + id + " no encontrado.");
         return null;
     }
+
+    // Hace falta lógica de validación por contraseña
 
     public void mostrarUsuarios() {
         System.out.println("Lista de usuarios registrados:");

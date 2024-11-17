@@ -1,40 +1,67 @@
 package metodosDePago;
 
-import tiposDeCambio.Pago;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-public class Cartera {
+import tiposDeCambio.Pago;
+// Implementé la interfaz Serializable para poder guardar esto en el archivo de objetos. 
+//Se deberá hacer también para todas las clases con las que desees hacer lo mismo pibe
+public class Cartera implements Serializable{
     private double saldo;  
     private List<Tarjeta> tarjetas;
     private List<CuentaBancaria> cuentasBancarias;
     private Pago tipoDeCambio;
+    //Nuevas adiciones: Historial de movimientos:
+    private String historial;
 
     public Cartera(double saldoInicial, Pago tipoDeCambio) {
         this.saldo = saldoInicial;
         this.tarjetas = new ArrayList<>();
         this.cuentasBancarias = new ArrayList<>();
         this.tipoDeCambio = tipoDeCambio;
+        this.historial = "";
     }
 
-    public void realizarPago(double cantidad){
+    public void realizarPago(double cantidad) throws IllegalArgumentException{
+        if(cantidad > saldo){
+            throw new IllegalArgumentException("Saldo insuficiente. Estado de saldo: " + saldo + " Te faltan: " + (cantidad - saldo));
+        }
         // Elegir método de pago por medio de la interfaz
         tipoDeCambio.pagar(cantidad);
         saldo -= cantidad;
+        //Lógica de Historial de pago
+        historial += "Pagó: $" + cantidad + "\n";
     }
 
     public double getSaldo() {
         return saldo;
     }
-
-    public void agregarSaldoCasino(double cantidad) {
-        saldo += cantidad;
+    //Tengo que añadirlo por los mementos
+    public String getHistorial() {
+        return historial;
+    }
+    public void setSaldo(double saldo){
+        this.saldo = saldo;
     }
 
+    public void setHistorial(String historial) {
+        this.historial = historial;
+    }
+    // Esto supongo que es para juntar las ganancias del casino, por ende agregué lógica de historial
+    public void agregarSaldoCasino(double cantidad) {
+        saldo += cantidad;
+        //Lógica de Historial (Borra en caso de no considerarlo lógico)
+        historial += "Se ingresó un monto de: $" + cantidad + "\n" ;
+         
+    }
+
+    //Intentalo Trabajar por excepciones o como veas, agrega la lógica del historial
     public boolean retirarSaldoCasino(double cantidad) {
         if (cantidad <= saldo) {
             saldo -= cantidad;
+            // Mensaje y anotación en el historial
+            historial += "Se hizo un retiro por: $" + cantidad + "\n";
+            System.out.println("Saldo restante: " + saldo);
             return true;
         } else {
             System.out.println("Saldo insuficiente en el casino.");
@@ -79,4 +106,14 @@ public class Cartera {
             System.out.println(cuenta);
         }
     }
+
+    // Retornar el objeto
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "Saldo='" + saldo + '\'' +
+                ", TipoDeCambio='" + tipoDeCambio.getClass().getSimpleName() + '\'';
+    }
+
+
 }

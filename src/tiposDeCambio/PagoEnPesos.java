@@ -4,11 +4,13 @@
  */
 package tiposDeCambio;
 
+import java.io.Serializable;
+
 /**
  *
  * @author David
  */
-public class PagoEnPesos implements Pago {
+public class PagoEnPesos implements Pago, Serializable {
     @Override
     public void pagar(double cantidad) {
         System.out.println("Pagando " + cantidad + " en pesos");

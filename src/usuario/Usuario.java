@@ -4,20 +4,22 @@
  */
 package usuario;
 
+import java.io.Serializable;
+import memento.Memento;
 import metodosDePago.Cartera;
 
 /**
  *
  * @author David
  */
-public class Usuario {
+// Originator en memento
+public class Usuario implements Serializable{
     private String id;               
     private String nombre;          
     private String correoElectronico; 
     private Cartera cartera;
     private boolean cuentaActiva;   
     private int contraseña;
-
     public Usuario(){
 
     }
@@ -92,9 +94,13 @@ public class Usuario {
         this.cuentaActiva = true;
         System.out.println("La cuenta ha sido reactivada.");
     }
-
+    // Modificación realizada: Adición de bloque try- catch
     public void pagar(double cantidad){
-        cartera.realizarPago(cantidad);
+        try {
+            cartera.realizarPago(cantidad);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
     public void mostrarInformacion() {
         System.out.println("ID: " + id);
@@ -113,6 +119,15 @@ public class Usuario {
                 ", cuentaActiva=" + cuentaActiva +
                 ", contraseña=" + contraseña +
                 '}';
+    }
+    // Crear y restaurar Mementos
+    public Memento crearMemento() {
+        return new Memento(cartera.getSaldo(), cartera.getHistorial());
+    }
+
+    public void restaurarMemento(Memento memento) {
+        this.getCartera().setSaldo(memento.getSaldo()); //this.saldo = memento.getSaldo();
+        this.getCartera().setHistorial(memento.getHistorial());
     }
 }
 
