@@ -64,6 +64,13 @@ public class Casino extends JFrame {
                 JOptionPane.showMessageDialog(this,"Entrada invalida.");
             }
         });
+        desactivarCuentaButton.addActionListener(e -> {
+
+            if(JOptionPane.showConfirmDialog(this, "¿Seguro que deseas desactivar tu cuenta?") == 1){
+                usuario.desactivarCuenta();
+                JFrame.EXIT_ON_CLOSE;
+            }
+        });
     }
 
     public void inicializar() {
