@@ -1,11 +1,13 @@
 package memento;
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class Memento implements Serializable {
     private final double saldo;
-    private final String historial;
+    private final ArrayList<String> historial;
 
-    public Memento(double saldo, String historial) {
+    public Memento(double saldo, ArrayList<String> historial) {
         this.saldo = saldo;
         this.historial = historial;
     }
@@ -14,7 +16,7 @@ public class Memento implements Serializable {
         return saldo;
     }
 
-    public String getHistorial() {
+    public ArrayList<String> getHistorial() {
         return historial;
     }
 }

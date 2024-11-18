@@ -1,6 +1,7 @@
 package metodosDePago;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import tiposDeCambio.Pago;
@@ -12,14 +13,14 @@ public class Cartera implements Serializable{
     private List<CuentaBancaria> cuentasBancarias;
     private Pago tipoDeCambio;
     //Nuevas adiciones: Historial de movimientos:
-    private String historial;
+    private ArrayList<String> historial;
 
     public Cartera(double saldoInicial, Pago tipoDeCambio) {
         this.saldo = saldoInicial;
         this.tarjetas = new ArrayList<>();
         this.cuentasBancarias = new ArrayList<>();
         this.tipoDeCambio = tipoDeCambio;
-        this.historial = "";
+        this.historial = new ArrayList<>();
     }
 
     public void realizarPago(double cantidad) throws IllegalArgumentException{
@@ -30,28 +31,29 @@ public class Cartera implements Serializable{
         tipoDeCambio.pagar(cantidad);
         saldo -= cantidad;
         //Lógica de Historial de pago
-        historial += "Pagó: $" + cantidad + "\n";
+        historial.add("Pagó: $" + cantidad);
     }
 
     public double getSaldo() {
         return saldo;
     }
     //Tengo que añadirlo por los mementos
-    public String getHistorial() {
+    public ArrayList<String> getHistorial() {
         return historial;
     }
     public void setSaldo(double saldo){
         this.saldo = saldo;
     }
 
-    public void setHistorial(String historial) {
+    public void setHistorial(ArrayList<String> historial) {
         this.historial = historial;
     }
+
     // Esto supongo que es para juntar las ganancias del casino, por ende agregué lógica de historial
     public void agregarSaldoCasino(double cantidad) {
         saldo += cantidad;
         //Lógica de Historial (Borra en caso de no considerarlo lógico)
-        historial += "Se ingresó un monto de: $" + cantidad + "\n" ;
+        historial.add("Se ingresó un monto de: $" + cantidad);
          
     }
 
@@ -60,7 +62,7 @@ public class Cartera implements Serializable{
         if (cantidad <= saldo) {
             saldo -= cantidad;
             // Mensaje y anotación en el historial
-            historial += "Se hizo un retiro por: $" + cantidad + "\n";
+            historial.add("Se hizo un retiro por: $" + cantidad);
             System.out.println("Saldo restante: " + saldo);
             return true;
         } else {

@@ -16,15 +16,16 @@ public class Tragamonedas extends JFrame{
     private JPanel tragaperras;
     private JProgressBar girando;
     private JLabel saldo;
-    private int dinero = 10000;
     private Timer animationTimer; // Timer para la animación
     private final Random rng = new Random();
     private int animationCounter = 0; // Contador para la animación
     private static final String[] simbolos = {"icons/uvas.png", "icons/manzana.png", "icons/sandia.png"};
+    private static Usuario user = null;
 
     public Tragamonedas(Usuario usuario){
+        user = usuario;
         inicializar();
-        saldo.setText(String.valueOf(usuario.getCartera().getSaldo()));
+        saldo.setText(String.valueOf(user.getCartera().getSaldo()));
         primerEspacio.setIcon(escalarImagen(simbolos[rng.nextInt(simbolos.length)]));
         segundoEspacio.setIcon(escalarImagen(simbolos[rng.nextInt(simbolos.length)]));
         tercerEspacio.setIcon(escalarImagen(simbolos[rng.nextInt(simbolos.length)]));
@@ -56,9 +57,13 @@ public class Tragamonedas extends JFrame{
         // Determinar el resultado
         if (symbol1 == symbol2 && symbol2 == symbol3) {
             titulo.setText("¡Ganaste!");
+            user.getCartera().agregarSaldoCasino(10000);
+            saldo.setText(String.valueOf(user.getCartera().getSaldo()));
             return true;
         } else {
             titulo.setText("Sigue intentando...");
+            user.getCartera().realizarPago(100);
+            saldo.setText(String.valueOf(user.getCartera().getSaldo()));
             return false;
         }
     }
@@ -91,7 +96,7 @@ public class Tragamonedas extends JFrame{
             if (animationCounter > 10) { // La animación durará 20 pasos
                 animationTimer.stop();
                 if(girar()){
-                    JOptionPane.showMessageDialog(this, "¡Haz ganado!");
+                    JOptionPane.showMessageDialog(this, "¡Haz ganado!\n Se han depositado 10,000 a tu cuenta");
                 }
             }
         });
