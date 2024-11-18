@@ -1,11 +1,9 @@
 package principal;
 
+import javax.swing.*;
 import metodosDePago.Cartera;
-import tiposDeCambio.Pago;
 import tiposDeCambio.PagoEnEuros;
 import usuario.Usuario;
-
-import javax.swing.*;
 
 public class Pantalla extends JFrame {
     private JTextField usuario;

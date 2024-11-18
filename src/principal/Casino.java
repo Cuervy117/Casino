@@ -1,15 +1,12 @@
 package principal;
 
 import blackjack.BlackjackGUI;
+import java.util.ArrayList;
+import javax.swing.*;
 import memento.Memento;
-import ruleta.RuletaCasino;
+import ruleta.*;
 import tragamonedas.Tragamonedas;
 import usuario.Usuario;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class Casino extends JFrame {
     private JButton blackJackButton;
@@ -42,11 +39,11 @@ public class Casino extends JFrame {
         }); 
         //Agregando funcionalidad de ruleta
         ruletaButton.addActionListener(e ->{ 
-            RuletaCasino rc = new RuletaCasino(null);
+            RuletaCasino rc = new RuletaCasino(usuario);
         });
 
         ruletaButton.addActionListener(e -> {
-            RuletaCasino ruletaCasino = new RuletaCasino();
+            RuletaCasino ruletaCasino = new RuletaCasino(usuario);
             historial.add(usuario.crearMemento());
             ruletaCasino.setVisible(true);
         } );
@@ -68,7 +65,7 @@ public class Casino extends JFrame {
         });
 
         ruletaButton.addActionListener(e -> {
-            RuletaCasino ruletaCasino = new RuletaCasino();
+            RuletaCasino ruletaCasino = new RuletaCasino(usuario);
             historial.add(usuario.crearMemento());
             ruletaCasino.setVisible(true);
         } );
