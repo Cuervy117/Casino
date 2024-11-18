@@ -1,73 +1,105 @@
 package ruleta;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import javax.swing.*;
+import metodosDePago.Cartera;
+import tiposDeCambio.Pago;
+import tiposDeCambio.PagoEnPesos;
+import usuario.*;
 
 public class RuletaCasino extends JFrame {
-    private static final int DIAMETRO = 360; // Tamaño de la ruleta
-    private static final int CENTRO_X = 250; // Centro en X
-    private static final int CENTRO_Y = 250; // Centro en Y
-
-    private int anguloActual = 0; // Ángulo inicial de la ruleta
-    private int resultadoFinal = -1; // Resultado de la ruleta
+    private int anguloActual = 0; // Ángulo inicial
+    private int resultadoFinal = -1; // Posición final de la ruleta
     private Timer timer;
+    private Usuario usuario;
 
-    public RuletaCasino() {
+    // Opciones de apuesta
+    private JComboBox<String> opcionesApuesta;
+    private JLabel saldoLabel;
+    private double saldo; // Saldo inicial
+    private JTextField cantidadApuestaField; // Campo para ingresar cantidad de apuesta
+    private JTextField numeroEspecificoField; // Campo para ingresar el número específico
+
+    public RuletaCasino(Usuario usuario) {
+        this.usuario = usuario;
+        this.saldo = usuario.getCartera().getSaldo();
         setTitle("Ruleta de Casino");
         setSize(550, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Panel de la ruleta
+        // Panel para la ruleta
         RuletaPanel panelRuleta = new RuletaPanel();
         add(panelRuleta, BorderLayout.CENTER);
 
-        // Panel de opciones
+        // Panel inferior para opciones de apuesta
         JPanel panelOpciones = new JPanel();
+        panelOpciones.setLayout(new GridLayout(5, 2, 10, 10));
+
+        // Opciones de apuesta
+        panelOpciones.add(new JLabel("Seleccione tipo de apuesta:"));
+        opcionesApuesta = new JComboBox<>(new String[]{
+                "Par", "Impar", "Rojo", "Negro", "Número Específico", "1-18", "19-36"
+        });
+        panelOpciones.add(opcionesApuesta);
+
+        // Campo para ingresar la cantidad de apuesta
+        panelOpciones.add(new JLabel("Cantidad de apuesta:"));
+        cantidadApuestaField = new JTextField();
+        panelOpciones.add(cantidadApuestaField);
+
+        // Campo para el número específico
+        panelOpciones.add(new JLabel("Número específico (0-36):"));
+        numeroEspecificoField = new JTextField();
+        panelOpciones.add(numeroEspecificoField);
+
+        // Saldo y botón para girar
+        saldoLabel = new JLabel("Saldo: $" + saldo);
+        panelOpciones.add(saldoLabel);
         JButton botonGirar = new JButton("Girar la Ruleta");
         panelOpciones.add(botonGirar);
+
         add(panelOpciones, BorderLayout.SOUTH);
 
         botonGirar.addActionListener(e -> girarRuleta(panelRuleta));
     }
 
     private void girarRuleta(RuletaPanel panelRuleta) {
+        double cantidadApuesta = obtenerCantidadApuesta();
+        if (cantidadApuesta <= 0) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese una apuesta válida.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            usuario.getCartera().realizarPago(cantidadApuesta);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         resultadoFinal = new Random().nextInt(37); // Generar resultado aleatorio (0-36)
-        int segmentos = 37; // Total de segmentos en la ruleta
-        int anguloSegmento = 360 / segmentos;
+        anguloActual = 0; // Resetear ángulo
 
-        // Calcular el ángulo de destino
-        int anguloDestino = (360 - (resultadoFinal * anguloSegmento)) % 360;
-
-        // Reiniciar el ángulo inicial
-        anguloActual = 0;
-
-        // Animación con un Timer
+        // Configurar el timer para animar la ruleta
         timer = new Timer(10, new ActionListener() {
             private int velocidad = 20;
-            private int girosRestantes = 150; // Giros antes de desacelerar
-            private boolean desacelerando = false;
+            private int girosRestantes = 100;
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (girosRestantes > 0) {
                     anguloActual = (anguloActual + velocidad) % 360;
-                    if (!desacelerando && girosRestantes < 40) {
-                        desacelerando = true;
-                        velocidad = 5; // Reducir la velocidad
-                    }
+                    velocidad = Math.max(1, velocidad - 1);
                     girosRestantes--;
-                    panelRuleta.repaint();
-                } else if (anguloActual != anguloDestino) {
-                    anguloActual = (anguloActual + 1) % 360; // Ajuste fino
-                    panelRuleta.repaint();
+
+                    // Actualizar el ángulo en el panel de la ruleta
+                    panelRuleta.setAnguloActual(anguloActual);
                 } else {
                     timer.stop();
-                    JOptionPane.showMessageDialog(RuletaCasino.this,
-                            "Número ganador: " + resultadoFinal,
-                            "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                    calcularResultado(cantidadApuesta);
                 }
             }
         });
@@ -75,65 +107,92 @@ public class RuletaCasino extends JFrame {
         timer.start();
     }
 
-    private class RuletaPanel extends JPanel {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    private double obtenerCantidadApuesta() {
+        try {
+            return Double.parseDouble(cantidadApuestaField.getText());
+        } catch (NumberFormatException e) {
+            return -1; // Si no se ingresa un número válido, devolver un valor negativo
+        }
+    }
 
-            int segmentos = 37; // Total de números en la ruleta
-            int anguloSegmento = 360 / segmentos;
+    private void calcularResultado(double cantidadApuesta) {
+        String seleccion = (String) opcionesApuesta.getSelectedItem();
+        double ganancia = 0;
 
-            // Dibujar cada segmento
-            for (int i = 0; i < segmentos; i++) {
-                if (i == 0) {
-                    g2d.setColor(Color.GREEN); // Segmento del 0
-                } else if (esNumeroRojo(i)) {
-                    g2d.setColor(Color.RED);
-                } else {
-                    g2d.setColor(Color.BLACK);
-                }
+        boolean esPar = resultadoFinal != 0 && resultadoFinal % 2 == 0;
+        boolean esRojo = esNumeroRojo(resultadoFinal);
 
-                g2d.fillArc(CENTRO_X - DIAMETRO / 2, CENTRO_Y - DIAMETRO / 2, DIAMETRO, DIAMETRO,
-                        anguloActual + i * anguloSegmento, anguloSegmento);
-
-                // Dibujar números en cada segmento
-                g2d.setColor(Color.WHITE);
-                double anguloRad = Math.toRadians(anguloActual + (i * anguloSegmento) + anguloSegmento / 2);
-                int xNumero = (int) (CENTRO_X + (DIAMETRO / 2.5) * Math.cos(anguloRad));
-                int yNumero = (int) (CENTRO_Y - (DIAMETRO / 2.5) * Math.sin(anguloRad));
-                g2d.drawString(String.valueOf(i), xNumero - 10, yNumero + 5);
-            }
-
-            // Dibujar el borde de la ruleta
-            g2d.setColor(Color.BLACK);
-            g2d.drawOval(CENTRO_X - DIAMETRO / 2, CENTRO_Y - DIAMETRO / 2, DIAMETRO, DIAMETRO);
-
-            // Dibujar el marcador (flecha)
-            g2d.setColor(Color.BLUE);
-            g2d.fillPolygon(
-                    new int[]{CENTRO_X, CENTRO_X - 15, CENTRO_X + 15},
-                    new int[]{CENTRO_Y - DIAMETRO / 2 - 10, CENTRO_Y - DIAMETRO / 2 - 40, CENTRO_Y - DIAMETRO / 2 - 40},
-                    3
-            );
+        switch (seleccion) {
+            case "Par":
+                if (esPar) ganancia = 2; // Paga 2x
+                break;
+            case "Impar":
+                if (!esPar && resultadoFinal != 0) ganancia = 2; // Paga 2x
+                break;
+            case "Rojo":
+                if (esRojo) ganancia = 2; // Paga 2x
+                break;
+            case "Negro":
+                if (!esRojo && resultadoFinal != 0) ganancia = 2; // Paga 2x
+                break;
+            case "Número Específico":
+                int numeroEspecifico = obtenerNumeroEspecifico();
+                if (resultadoFinal == numeroEspecifico) ganancia = 35; // Paga 35x
+                break;
+            case "1-18":
+                if (resultadoFinal >= 1 && resultadoFinal <= 18) ganancia = 2; // Paga 2x
+                break;
+            case "19-36":
+                if (resultadoFinal >= 19 && resultadoFinal <= 36) ganancia = 2; // Paga 2x
+                break;
         }
 
-        private boolean esNumeroRojo(int numero) {
-            int[] numerosRojos = {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36};
-            for (int n : numerosRojos) {
-                if (n == numero) return true;
-            }
-            return false;
+        if (ganancia > 0) {
+            usuario.getCartera().agregarSaldoCasino(cantidadApuesta * ganancia);
+             // Ganancia basada en la cantidad apostada
+            JOptionPane.showMessageDialog(this, "¡Ganaste! Resultado: " + resultadoFinal +
+                    " Ganaste $" + (cantidadApuesta * ganancia), "Resultado", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            // Pérdida de la apuesta
+            JOptionPane.showMessageDialog(this, "Perdiste. Resultado: " + resultadoFinal,
+                    "Resultado", JOptionPane.INFORMATION_MESSAGE);
         }
+        saldo = usuario.getCartera().getSaldo();
+        saldoLabel.setText("Saldo: $" + saldo);
+
+        if (saldo <= 0) {
+            JOptionPane.showMessageDialog(this, "Te has quedado sin saldo.", "Saldo Insuficiente",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private int obtenerNumeroEspecifico() {
+        try {
+            return Integer.parseInt(numeroEspecificoField.getText());
+        } catch (NumberFormatException e) {
+            return -1; // Si no se ingresa un número válido, devolver un valor negativo
+        }
+    }
+
+    static boolean esNumeroRojo(int numero) {
+        int[] numerosRojos = {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36};
+        for (int n : numerosRojos) {
+            if (n == numero) return true;
+        }
+        return false;
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            RuletaCasino ruleta = new RuletaCasino();
+            Pago pesosMexicanos = new PagoEnPesos();
+            Usuario user1 = new Usuario("123", "Samuel", "santi.sam120@gmail.com", new Cartera(500, pesosMexicanos), "123");
+            RuletaCasino ruleta = new RuletaCasino(user1);
             ruleta.setVisible(true);
         });
     }
 }
+
+
+
 
 
