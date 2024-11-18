@@ -1,12 +1,17 @@
 package principal;
 
-import blackjack.BlackjackGUI;
-import java.util.ArrayList;
 import javax.swing.*;
+
+import blackjack.BlackjackGUI;
 import memento.Memento;
-import ruleta.*;
+import ruleta.RuletaCasino;
 import tragamonedas.Tragamonedas;
 import usuario.Usuario;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Casino extends JFrame {
     private JButton blackJackButton;
@@ -36,36 +41,10 @@ public class Casino extends JFrame {
             BlackjackGUI bj = new BlackjackGUI(usuario);
             historial.add(usuario.crearMemento());
             bj.setVisible(true);
-        }); 
-        //Agregando funcionalidad de ruleta
-        ruletaButton.addActionListener(e ->{ 
-            RuletaCasino rc = new RuletaCasino(usuario);
         });
 
         ruletaButton.addActionListener(e -> {
-            RuletaCasino ruletaCasino = new RuletaCasino(usuario);
-            historial.add(usuario.crearMemento());
-            ruletaCasino.setVisible(true);
-        } );
-
-        tragamonedasButton.addActionListener(e -> {
-            Tragamonedas tragamonedas = new Tragamonedas(usuario);
-            historial.add(usuario.crearMemento());
-            tragamonedas.setVisible(true);
-        });
-        retirarDineroButton.addActionListener(e -> {
-            String retirar = JOptionPane.showInputDialog(this, "Ingresa la cantidad que deseas retirar",
-                    "Retiro de dinero", JOptionPane.PLAIN_MESSAGE);
-            try{
-                usuario.getCartera().retirarSaldoCasino(Double.parseDouble(retirar));
-                saldo.setText("Saldo : " + usuario.getCartera().getSaldo());
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this,"Entrada invalida.");
-            }
-        });
-
-        ruletaButton.addActionListener(e -> {
-            RuletaCasino ruletaCasino = new RuletaCasino(usuario);
+            RuletaCasino ruletaCasino = new RuletaCasino();
             historial.add(usuario.crearMemento());
             ruletaCasino.setVisible(true);
         } );
