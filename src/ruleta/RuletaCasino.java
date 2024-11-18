@@ -26,8 +26,8 @@ public class RuletaCasino extends JFrame {
         this.usuario = usuario;
         this.saldo = usuario.getCartera().getSaldo();
         setTitle("Ruleta de Casino");
-        setSize(400, 550);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(550, 600);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Panel para la ruleta

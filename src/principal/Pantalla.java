@@ -1,5 +1,10 @@
 package principal;
 
+import metodosDePago.Cartera;
+import tiposDeCambio.Pago;
+import tiposDeCambio.PagoEnEuros;
+import usuario.Usuario;
+
 import javax.swing.*;
 
 public class Pantalla extends JFrame {
@@ -10,6 +15,8 @@ public class Pantalla extends JFrame {
     private JPanel Titulo;
     private JPanel Entrada;
     private JButton crearCuentaButton;
+    private PagoEnEuros pago = new PagoEnEuros();
+    private Usuario user = new Usuario("","David", "david@david",new Cartera(12000, pago), "asdfasdfa");
 
     public Pantalla(){
         inicializar();
@@ -25,9 +32,10 @@ public class Pantalla extends JFrame {
         });
 
         entrar.addActionListener(e -> {
+
             JOptionPane.showMessageDialog(this, "Bienvenido al sistema");
             dispose();
-            Casino casino = new Casino();
+            Casino casino = new Casino(user);
             casino.setVisible(true);
         });
     }

@@ -1,10 +1,13 @@
 package blackjack;
 
+import usuario.Usuario;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class BlackjackGUI extends JFrame {
@@ -16,9 +19,11 @@ public class BlackjackGUI extends JFrame {
     private ArrayList<Carta> manoCrupier;
     private double apuesta;
     private double seguro;
+    private Usuario user = null;
 
-    public BlackjackGUI() {
+    public BlackjackGUI(Usuario usuario) {
         super("BlackJack");
+        user = usuario;
         inicializarJuego();
         inicializarInterfaz();
     }
@@ -33,7 +38,7 @@ public class BlackjackGUI extends JFrame {
 
     private void inicializarInterfaz() {
         setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -100,8 +105,16 @@ public class BlackjackGUI extends JFrame {
         String input = JOptionPane.showInputDialog(this, "Ingrese la cantidad que desea apostar:", "Apuesta inicial", JOptionPane.PLAIN_MESSAGE);
         try {
             apuesta = Double.parseDouble(input);
+            if(apuesta < 1){
+                JOptionPane.showMessageDialog(this,"No es una apuesta valida");
+                throw new IOException();
+            }else if(user.getCartera().getSaldo() < apuesta ){
+                JOptionPane.showMessageDialog(this,"No tiene saldo suficiente");
+                throw new IOException();
+            }
             mostrarMensaje("Has apostado $" + apuesta);
-
+            user.getCartera().realizarPago(apuesta);
+            mostrarMensaje("Te quedan $" + user.getCartera().getSaldo() + " en tu cartera");
             manoJugador.add(baraja.removeFirst());
             manoCrupier.add(baraja.removeFirst());
             manoJugador.add(baraja.removeFirst());
@@ -116,7 +129,7 @@ public class BlackjackGUI extends JFrame {
             if (calcularValorDeMano(manoJugador) == 21) {
                 manejarApuesta(1);
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException | IOException ex) {
             mostrarMensaje("Entrada inválida. Por favor, ingrese un número.");
             realizarApuestaInicial();
         }
@@ -171,9 +184,17 @@ public class BlackjackGUI extends JFrame {
 
     private void manejarApuesta(int resultado) {
         switch (resultado) {
-            case 1 -> mostrarMensaje("¡Has ganado! Ganaste $" + apuesta);
-            case 2 -> mostrarMensaje("Empate. Recuperas tu apuesta.");
-            case 3 -> mostrarMensaje("Has perdido. Pierdes tu apuesta.");
+            case 1 -> {
+                mostrarMensaje("¡Has ganado! Ganaste $" + apuesta);
+                user.getCartera().agregarSaldoCasino(apuesta*2);
+            }
+            case 2 -> {
+                mostrarMensaje("Empate. Recuperas tu apuesta.");
+                user.getCartera().agregarSaldoCasino(apuesta);
+            }
+            case 3 -> {
+                mostrarMensaje("Has perdido. Pierdes tu apuesta.");
+            }
         }
         reiniciarJuego();
     }
@@ -252,11 +273,5 @@ public class BlackjackGUI extends JFrame {
         return panelCarta;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            BlackjackGUI gui = new BlackjackGUI();
-            gui.setVisible(true);
-        });
-    }
 }
 
