@@ -101,7 +101,21 @@ public class Casino extends JFrame {
             }
         });
         cambiarDeCuentaButton.addActionListener(e -> {
-            System.
+            dispose();
+        });
+        ingresarDineroButton.addActionListener(e -> {
+            String ingresar = JOptionPane.showInputDialog(this, "Ingresa la cantidad que deseas ingresar",
+                    "Ingreso de dinero", JOptionPane.PLAIN_MESSAGE);
+            try{
+                usuario.getCartera().agregarSaldoCasino(Double.parseDouble(ingresar));
+                saldo.setText("Saldo : " + usuario.getCartera().getSaldo());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this,"Entrada invalida.");
+            }
+        });
+        historialButton.addActionListener(e -> {
+            //historial.add(new Memento(120, (new ArrayList<>()).add("hola")));
+            mostrarHistorial();
         });
     }
 
@@ -110,5 +124,18 @@ public class Casino extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 400);
         setLocationRelativeTo(null);
+    }
+
+    private void mostrarHistorial() {
+        if (historial.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El historial está vacío.", "Historial", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            Memento ultimo = historial.get(historial.size() - 1);
+            StringBuilder builder = new StringBuilder();
+            for (String cambios : ultimo.getHistorial()) {
+                builder.append(cambios).append("\n");
+            }
+            JOptionPane.showMessageDialog(null, builder.toString(), "Historial", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }
