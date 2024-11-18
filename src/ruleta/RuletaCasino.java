@@ -17,7 +17,7 @@ public class RuletaCasino extends JFrame {
     public RuletaCasino() {
         setTitle("Ruleta de Casino");
         setSize(550, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Panel de la ruleta

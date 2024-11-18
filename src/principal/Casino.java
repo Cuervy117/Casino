@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import blackjack.BlackJack;
 import blackjack.BlackjackGUI;
+import ruleta.RuletaCasino;
 
 public class Casino extends JFrame {
     private JButton blackJackButton;
@@ -26,6 +27,11 @@ public class Casino extends JFrame {
             BlackjackGUI bj = new BlackjackGUI();
             bj.setVisible(true);
         });
+
+        ruletaButton.addActionListener(e -> {
+            RuletaCasino ruletaCasino = new RuletaCasino();
+            ruletaCasino.setVisible(true);
+        } );
     }
 
     public void inicializar() {
