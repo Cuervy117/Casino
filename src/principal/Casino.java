@@ -15,7 +15,6 @@ public class Casino extends JFrame {
     private JButton ruletaButton;
     private JPanel juegos;
     private JPanel cuenta;
-    private JPanel apuestas;
     private JButton tragamonedasButton;
     private JButton ingresarDineroButton;
     private JButton cambiarDeCuentaButton;

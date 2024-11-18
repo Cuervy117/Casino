@@ -1,6 +1,8 @@
 package principal;
 
 import javax.swing.*;
+
+import memento.GestorUsuarios;
 import metodosDePago.Cartera;
 import tiposDeCambio.PagoEnEuros;
 import usuario.Usuario;
@@ -34,10 +36,14 @@ public class Pantalla extends JFrame {
                 JOptionPane.showMessageDialog(this, "Por favor, ingresa un nombre de usuario y contraseña.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            //Agregar validación de que el usuario exista en la base de datos
-            JOptionPane.showMessageDialog(this, "Bienvenido al sistema");
-            Casino casino = new Casino(user);
-            casino.setVisible(true);
+            try{
+                user = GestorUsuarios.getGestor().autenticarUsuario(usuario.getText(), new String(contraseña.getPassword()));
+                JOptionPane.showMessageDialog(this, "Bienvenido al sistema");
+                Casino casino = new Casino(user);
+                casino.setVisible(true);
+            } catch (IllegalArgumentException ex){
+                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
     }
 
