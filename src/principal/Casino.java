@@ -8,6 +8,9 @@ import ruleta.RuletaCasino;
 import tragamonedas.Tragamonedas;
 import usuario.Usuario;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Casino extends JFrame {
@@ -23,14 +26,17 @@ public class Casino extends JFrame {
     private JButton desactivarCuentaButton;
     private JButton historialButton;
     private JPanel casino;
+    private JLabel saldo;
+    private JLabel nombre;
     private final Usuario usuario;
-    
+
     private ArrayList<Memento> historial = new ArrayList<>();
 
     public Casino(Usuario usuario) {
         inicializar();
         this.usuario = usuario;
-
+        saldo.setText("Saldo : " + usuario.getCartera().getSaldo());
+        nombre.setText("Nombre : " + usuario.getNombre());
         blackJackButton.addActionListener(e -> {
             BlackjackGUI bj = new BlackjackGUI(usuario);
             historial.add(usuario.crearMemento());
@@ -47,6 +53,16 @@ public class Casino extends JFrame {
             Tragamonedas tragamonedas = new Tragamonedas(usuario);
             historial.add(usuario.crearMemento());
             tragamonedas.setVisible(true);
+        });
+        retirarDineroButton.addActionListener(e -> {
+            String retirar = JOptionPane.showInputDialog(this, "Ingresa la cantidad que deseas retirar",
+                    "Retiro de dinero", JOptionPane.PLAIN_MESSAGE);
+            try{
+                usuario.getCartera().retirarSaldoCasino(Double.parseDouble(retirar));
+                saldo.setText("Saldo : " + usuario.getCartera().getSaldo());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this,"Entrada invalida.");
+            }
         });
     }
 
