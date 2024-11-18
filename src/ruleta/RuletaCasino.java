@@ -26,8 +26,8 @@ public class RuletaCasino extends JFrame {
         this.usuario = usuario;
         this.saldo = usuario.getCartera().getSaldo();
         setTitle("Ruleta de Casino");
-        setSize(550, 600);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(400, 550);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Panel para la ruleta
@@ -53,6 +53,7 @@ public class RuletaCasino extends JFrame {
         // Campo para el número específico
         panelOpciones.add(new JLabel("Número específico (0-36):"));
         numeroEspecificoField = new JTextField();
+        numeroEspecificoField.setEnabled(false); // Deshabilitar inicialmente
         panelOpciones.add(numeroEspecificoField);
 
         // Saldo y botón para girar
@@ -62,6 +63,16 @@ public class RuletaCasino extends JFrame {
         panelOpciones.add(botonGirar);
 
         add(panelOpciones, BorderLayout.SOUTH);
+
+        // ActionListener para habilitar/deshabilitar el campo del número específico
+        opcionesApuesta.addActionListener(e -> {
+            String seleccion = (String) opcionesApuesta.getSelectedItem();
+            if ("Número Específico".equals(seleccion)) {
+                numeroEspecificoField.setEnabled(true); // Habilitar
+            } else {
+                numeroEspecificoField.setEnabled(false); // Deshabilitar
+            }
+        });
 
         botonGirar.addActionListener(e -> girarRuleta(panelRuleta));
     }
@@ -148,16 +159,17 @@ public class RuletaCasino extends JFrame {
         }
 
         if (ganancia > 0) {
+            saldo = usuario.getCartera().getSaldo(); // Ganancia basada en la cantidad apostada
             usuario.getCartera().agregarSaldoCasino(cantidadApuesta * ganancia);
-             // Ganancia basada en la cantidad apostada
             JOptionPane.showMessageDialog(this, "¡Ganaste! Resultado: " + resultadoFinal +
                     " Ganaste $" + (cantidadApuesta * ganancia), "Resultado", JOptionPane.INFORMATION_MESSAGE);
         } else {
             // Pérdida de la apuesta
+            saldo = usuario.getCartera().getSaldo();
             JOptionPane.showMessageDialog(this, "Perdiste. Resultado: " + resultadoFinal,
                     "Resultado", JOptionPane.INFORMATION_MESSAGE);
         }
-        saldo = usuario.getCartera().getSaldo();
+
         saldoLabel.setText("Saldo: $" + saldo);
 
         if (saldo <= 0) {
@@ -191,6 +203,7 @@ public class RuletaCasino extends JFrame {
         });
     }
 }
+
 
 
 
