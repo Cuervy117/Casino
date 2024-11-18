@@ -10,6 +10,7 @@ public class GestorUsuarios {
     private Map<String, Usuario> usuarios;
     private File archivoUsuarios;
     private static String paquete;
+    private static GestorUsuarios gestor;
 
     public GestorUsuarios(String rutaArchivo) {
         archivoUsuarios = new File(rutaArchivo);
@@ -99,6 +100,13 @@ public class GestorUsuarios {
             return directorioPadre.toString() + "/";
         }
         return "";
+    }
+
+    public static GestorUsuarios getGestor(){
+        if(gestor == null){
+            gestor = new GestorUsuarios("Usuarios");
+        }
+        return gestor;
     }
 }
 

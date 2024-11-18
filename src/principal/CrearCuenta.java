@@ -3,10 +3,8 @@ package principal;
 import javax.swing.*;
 import memento.*;
 import metodosDePago.Cartera;
-import sistemaLogin.BaseDeDatos;
 import tiposDeCambio.PagoEnPesos;
 import usuario.Usuario;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -41,8 +39,8 @@ public class CrearCuenta extends JFrame {
     }
 
     public void mostrarUsuario() {
-        JOptionPane.showMessageDialog(this,BaseDeDatos.getBaseDeDatos()
-                .getUsuarios().get(usuario.getText()).toString());
+        //JOptionPane.showMessageDialog(this.BaseDeDatos.getBaseDeDatos()
+                //.getUsuarios().get(usuario.getText()).toString());
         dispose();
     }
     private void inicializarPantalla() {
