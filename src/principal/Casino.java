@@ -1,8 +1,8 @@
 package principal;
 
-import javax.swing.*;
-
 import blackjack.BlackjackGUI;
+import javax.swing.*;
+import ruleta.RuletaCasino;
 
 public class Casino extends JFrame {
     private JButton blackJackButton;
@@ -23,6 +23,10 @@ public class Casino extends JFrame {
         blackJackButton.addActionListener(e -> {
             BlackjackGUI bj = new BlackjackGUI();
             bj.setVisible(true);
+        }); 
+        //Agregando funcionalidad de ruleta
+        ruletaButton.addActionListener(e ->{ 
+            RuletaCasino rc = new RuletaCasino(null);
         });
     }
 

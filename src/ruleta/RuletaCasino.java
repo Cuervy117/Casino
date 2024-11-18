@@ -1,17 +1,15 @@
 package ruleta;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import javax.swing.*;
+import metodosDePago.Cartera;
+import tiposDeCambio.Pago;
+import tiposDeCambio.PagoEnPesos;
 import usuario.*;
-import memento.*;
 
 public class RuletaCasino extends JFrame {
-    private static final int DIAMETRO = 300;
-    private static final int CENTRO_X = 200;
-    private static final int CENTRO_Y = 200;
-
     private int anguloActual = 0; // Ángulo inicial
     private int resultadoFinal = -1; // Posición final de la ruleta
     private Timer timer;
@@ -20,10 +18,13 @@ public class RuletaCasino extends JFrame {
     // Opciones de apuesta
     private JComboBox<String> opcionesApuesta;
     private JLabel saldoLabel;
-    private double saldo = 1000; // Saldo inicial
+    private double saldo; // Saldo inicial
     private JTextField cantidadApuestaField; // Campo para ingresar cantidad de apuesta
+    private JTextField numeroEspecificoField; // Campo para ingresar el número específico
 
-    public RuletaCasino() {
+    public RuletaCasino(Usuario usuario) {
+        this.usuario = usuario;
+        this.saldo = usuario.getCartera().getSaldo();
         setTitle("Ruleta de Casino");
         setSize(400, 550);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,12 +36,12 @@ public class RuletaCasino extends JFrame {
 
         // Panel inferior para opciones de apuesta
         JPanel panelOpciones = new JPanel();
-        panelOpciones.setLayout(new GridLayout(4, 2, 10, 10));
+        panelOpciones.setLayout(new GridLayout(5, 2, 10, 10));
 
         // Opciones de apuesta
         panelOpciones.add(new JLabel("Seleccione tipo de apuesta:"));
         opcionesApuesta = new JComboBox<>(new String[]{
-                "Par", "Impar", "Rojo", "Negro"
+                "Par", "Impar", "Rojo", "Negro", "Número Específico", "1-18", "19-36"
         });
         panelOpciones.add(opcionesApuesta);
 
@@ -48,6 +49,11 @@ public class RuletaCasino extends JFrame {
         panelOpciones.add(new JLabel("Cantidad de apuesta:"));
         cantidadApuestaField = new JTextField();
         panelOpciones.add(cantidadApuestaField);
+
+        // Campo para el número específico
+        panelOpciones.add(new JLabel("Número específico (0-36):"));
+        numeroEspecificoField = new JTextField();
+        panelOpciones.add(numeroEspecificoField);
 
         // Saldo y botón para girar
         saldoLabel = new JLabel("Saldo: $" + saldo);
@@ -67,12 +73,12 @@ public class RuletaCasino extends JFrame {
             return;
         }
 
-        if (cantidadApuesta > saldo) {
-            JOptionPane.showMessageDialog(this, "No tienes suficiente saldo para hacer esa apuesta.", "Error", JOptionPane.ERROR_MESSAGE);
+        try {
+            usuario.getCartera().realizarPago(cantidadApuesta);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-
 
         resultadoFinal = new Random().nextInt(37); // Generar resultado aleatorio (0-36)
         anguloActual = 0; // Resetear ángulo
@@ -129,23 +135,42 @@ public class RuletaCasino extends JFrame {
             case "Negro":
                 if (!esRojo && resultadoFinal != 0) ganancia = 2; // Paga 2x
                 break;
+            case "Número Específico":
+                int numeroEspecifico = obtenerNumeroEspecifico();
+                if (resultadoFinal == numeroEspecifico) ganancia = 35; // Paga 35x
+                break;
+            case "1-18":
+                if (resultadoFinal >= 1 && resultadoFinal <= 18) ganancia = 2; // Paga 2x
+                break;
+            case "19-36":
+                if (resultadoFinal >= 19 && resultadoFinal <= 36) ganancia = 2; // Paga 2x
+                break;
         }
 
         if (ganancia > 0) {
-            saldo += cantidadApuesta * ganancia; // Ganancia basada en la cantidad apostada
+            usuario.getCartera().agregarSaldoCasino(cantidadApuesta * ganancia);
+             // Ganancia basada en la cantidad apostada
             JOptionPane.showMessageDialog(this, "¡Ganaste! Resultado: " + resultadoFinal +
                     " Ganaste $" + (cantidadApuesta * ganancia), "Resultado", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            saldo -= cantidadApuesta; // Pérdida de la apuesta
+            // Pérdida de la apuesta
             JOptionPane.showMessageDialog(this, "Perdiste. Resultado: " + resultadoFinal,
                     "Resultado", JOptionPane.INFORMATION_MESSAGE);
         }
-
+        saldo = usuario.getCartera().getSaldo();
         saldoLabel.setText("Saldo: $" + saldo);
 
         if (saldo <= 0) {
             JOptionPane.showMessageDialog(this, "Te has quedado sin saldo.", "Saldo Insuficiente",
                     JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private int obtenerNumeroEspecifico() {
+        try {
+            return Integer.parseInt(numeroEspecificoField.getText());
+        } catch (NumberFormatException e) {
+            return -1; // Si no se ingresa un número válido, devolver un valor negativo
         }
     }
 
@@ -159,11 +184,14 @@ public class RuletaCasino extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            RuletaCasino ruleta = new RuletaCasino();
+            Pago pesosMexicanos = new PagoEnPesos();
+            Usuario user1 = new Usuario("123", "Samuel", "santi.sam120@gmail.com", new Cartera(500, pesosMexicanos), "123");
+            RuletaCasino ruleta = new RuletaCasino(user1);
             ruleta.setVisible(true);
         });
     }
 }
+
 
 
 
