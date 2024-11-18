@@ -4,6 +4,8 @@ import javax.swing.*;
 import metodosDePago.Cartera;
 import tiposDeCambio.PagoEnEuros;
 import usuario.Usuario;
+import memento.*;
+
 
 public class Pantalla extends JFrame {
     private JTextField usuario;
@@ -15,11 +17,12 @@ public class Pantalla extends JFrame {
     private JButton crearCuentaButton;
     private PagoEnEuros pago = new PagoEnEuros();
     private Usuario user = new Usuario("","David", "david@david",new Cartera(12000, pago), "asdfasdfa");
-
-    public Pantalla(){
+    private GestorUsuarios gestorUsuarios;
+    public Pantalla(GestorUsuarios admin){
+        this.gestorUsuarios = admin;
         inicializar();
         crearCuentaButton.addActionListener(e -> {
-            CrearCuenta crearCuenta = new CrearCuenta();
+            CrearCuenta crearCuenta = new CrearCuenta(gestorUsuarios);
             crearCuenta.setVisible(true);
         });
 

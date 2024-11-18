@@ -1,8 +1,10 @@
 package principal;
 
 import javax.swing.*;
-
+import memento.*;
+import metodosDePago.Cartera;
 import sistemaLogin.BaseDeDatos;
+import tiposDeCambio.PagoEnPesos;
 import usuario.Usuario;
 
 import java.awt.event.ActionEvent;
@@ -14,12 +16,19 @@ public class CrearCuenta extends JFrame {
     private JTextField correo;
     private JPasswordField contraseña;
     private JButton crearButton;
-
-    public CrearCuenta() {
+    //Atributos de clase
+    private GestorUsuarios gestorUsuarios;
+    public CrearCuenta(GestorUsuarios admin) {
+        this.gestorUsuarios = admin;
         inicializarPantalla();
         crearButton.addActionListener(e -> {
-            BaseDeDatos.agregarUsuario(new Usuario(null, usuario.getText(), correo.getText(),
-                    null, new String(contraseña.getPassword())));
+            try {
+                gestorUsuarios.registrarUsuario(new Usuario(null, usuario.getText(), correo.getText(),
+                        new Cartera(0, new PagoEnPesos()), new String(contraseña.getPassword())));
+                JOptionPane.showMessageDialog(this, "Cuenta creada con exito", "Felcidades", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IllegalArgumentException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
             mostrarUsuario();
         });
