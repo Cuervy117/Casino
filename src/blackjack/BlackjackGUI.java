@@ -188,8 +188,28 @@ public class BlackjackGUI extends JFrame {
         return 3;
     }
 
-    private int calcularValorDeMano(ArrayList<Carta> mano) {
-        return BlackJack.calcularValorDeMano(mano);
+    private static int calcularValorDeMano(ArrayList<Carta> mano) {
+        int total = 0;
+        int ases = 0;
+
+        for(Carta c : mano){
+            String numero = c.getNumero();
+            try{
+                total += Integer.parseInt(numero);
+            }catch(NumberFormatException e){
+                if(numero.equals("As")){
+                    ases++;
+                    total += 11;
+                }else if(numero.equals("J") || numero.equals("Q") || numero.equals("K")){
+                    total += 10;
+                }
+            }
+        }
+        while (total > 21 && ases > 0) {
+            total -= 10;
+            ases--;
+        }
+        return total;
     }
 
     private void mostrarMensaje(String mensaje) {
