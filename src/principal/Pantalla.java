@@ -30,7 +30,11 @@ public class Pantalla extends JFrame {
         });
 
         entrar.addActionListener(e -> {
-
+            if (usuario.getText().isEmpty() || contraseña.getPassword().length == 0) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingresa un nombre de usuario y contraseña.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            //Agregar validación de que el usuario exista en la base de datos
             JOptionPane.showMessageDialog(this, "Bienvenido al sistema");
             Casino casino = new Casino(user);
             casino.setVisible(true);
