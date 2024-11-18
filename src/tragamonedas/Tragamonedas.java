@@ -1,39 +1,42 @@
 package tragamonedas;
 
+import usuario.Usuario;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
 public class Tragamonedas extends JFrame{
+
     private JLabel titulo;
     private JButton GIRARButton;
     private JLabel primerEspacio;
     private JLabel segundoEspacio;
     private JLabel tercerEspacio;
     private JPanel tragaperras;
+    private JProgressBar girando;
+    private JLabel saldo;
+    private int dinero = 10000;
     private Timer animationTimer; // Timer para la animación
     private final Random rng = new Random();
     private int animationCounter = 0; // Contador para la animación
     private static final String[] simbolos = {"icons/uvas.png", "icons/manzana.png", "icons/sandia.png"};
 
-    public Tragamonedas(){
+    public Tragamonedas(Usuario usuario){
         inicializar();
-
+        saldo.setText(String.valueOf(usuario.getCartera().getSaldo()));
         primerEspacio.setIcon(escalarImagen(simbolos[rng.nextInt(simbolos.length)]));
         segundoEspacio.setIcon(escalarImagen(simbolos[rng.nextInt(simbolos.length)]));
         tercerEspacio.setIcon(escalarImagen(simbolos[rng.nextInt(simbolos.length)]));
 
         GIRARButton.addActionListener(e -> {
             iniciarAnimacion();
-            if(girar()){
-                System.out.println("ganó");
-            }
         });
     }
 
     public void inicializar(){
         setContentPane(tragaperras);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600, 400);
         setLocationRelativeTo(null);
     }
@@ -83,11 +86,13 @@ public class Tragamonedas extends JFrame{
             tercerEspacio.setIcon(escalarImagen(simbolos[rng.nextInt(simbolos.length)]));
 
             animationCounter++;
-
+            girando.setValue(animationCounter*10);
             // Detener la animación después de un número definido de actualizaciones
             if (animationCounter > 10) { // La animación durará 20 pasos
                 animationTimer.stop();
-
+                if(girar()){
+                    JOptionPane.showMessageDialog(this, "¡Haz ganado!");
+                }
             }
         });
 

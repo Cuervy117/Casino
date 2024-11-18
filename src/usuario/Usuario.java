@@ -20,6 +20,7 @@ public class Usuario implements Serializable{
     private Cartera cartera;
     private boolean cuentaActiva;   
     private int contraseña;
+
     public Usuario(){
 
     }
