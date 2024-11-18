@@ -1,9 +1,7 @@
 package principal;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import blackjack.BlackJack;
+
 import blackjack.BlackjackGUI;
 
 public class Casino extends JFrame {
